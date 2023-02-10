@@ -40,13 +40,14 @@ public class SecuAuthConfig {
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors(cors -> cors.disable()).csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(request -> request.requestMatchers("/home/**", "/register/**", "", "/")
-						.permitAll()
-						// .requestMatchers(h2ConsolePath + "/**").authenticated()
+						.permitAll().requestMatchers(h2ConsolePath + "/**").authenticated()
 						.requestMatchers("/users/**", "/add-user/**", "change-role/**").hasRole("ADMIN")
 						.requestMatchers("/api/users/**", "/api/add-user/**", "/api/change-role/**").hasRole("ADMIN")
 						.requestMatchers("/me/**", "/api/me/**").hasRole("USER").anyRequest().authenticated())
-				.formLogin((form) -> form.loginPage("/login").permitAll()).logout(logout -> logout.permitAll())
-				.userDetailsService(userDetailsService).headers(headers -> headers.frameOptions().sameOrigin());
+				.formLogin((form) -> form.permitAll())
+				// .formLogin((form) -> form.loginPage("/login").permitAll())
+				.logout(logout -> logout.permitAll()).userDetailsService(userDetailsService)
+				.headers(headers -> headers.frameOptions().sameOrigin());
 		return http.build();
 	}
 
@@ -56,10 +57,10 @@ public class SecuAuthConfig {
 			CustomRole roleAdmin = new CustomRole("ROLE_ADMIN");
 			CustomRole roleUser = new CustomRole("ROLE_USER");
 			CustomUser user = new CustomUser("user", passwordEncoder().encode("pass"), List.of(roleAdmin, roleUser));
-			List<CustomRole> roles = new ArrayList<CustomRole>();
-			roles.add(roleUser);
-			roles.add(roleAdmin);
-			// roleRepository.saveAll(roles);
+//			List<CustomRole> roles = new ArrayList<CustomRole>();
+//			roles.add(roleUser);
+//			roles.add(roleAdmin);
+//			roleRepository.saveAll(roles);
 			userRepository.save(user);
 		};
 	}

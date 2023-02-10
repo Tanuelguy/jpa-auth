@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import fr.ajc.SecuAuth.models.CustomRole;
@@ -46,20 +47,20 @@ public class SecurityController {
 	    public void redirectToHome(HttpServletResponse response) throws IOException {
 	        response.sendRedirect("/home");
 	    }
-
-	    @GetMapping("/home")
-	    public Map<String, String> homePage() {
-	        Map<String, String> routes = new HashMap<>();
-	        routes.put("users", "/users");
-	        routes.put("me", "/me");
-	        routes.put("register", "/register");
+//
+//	    @GetMapping("/home")
+//	    public Map<String, String> homePage() {
+//	        Map<String, String> routes = new HashMap<>();
+//	        routes.put("users", "/users");
+//	        routes.put("me", "/me");
+//	        routes.put("register", "/register");
 //	        routes.put("apiuser", "/api/users");
 //	        routes.put("apime", "/api/me");
 //	        routes.put("apiadd-user","/api/add-user");
 //	        routes.put("apichange-role","/api/change-role");
-	        routes.put("h2", h2ConsolePath);
-	        return routes;
-	    }
+//	        routes.put("h2", h2ConsolePath);
+//	        return routes;
+//	    }
 	@GetMapping("/users")
 	public ModelAndView returnUsersHTML(@RequestParam(required = false) Long id) {
 		ModelAndView mav = new ModelAndView("view_users");
@@ -80,8 +81,25 @@ public class SecurityController {
 		mav.addObject("users",users);
 		return mav;
 	}
-	  @PostMapping("/register")
-	    public CustomUser registerUser(@RequestBody CustomUser user) throws RoleNotFoundException {
+	@GetMapping("/register")
+	@ResponseBody
+	public ModelAndView register() {
+		ModelAndView mav= new ModelAndView();
+		mav.setViewName("register");
+		return mav;
+	}
+	@PostMapping("/registersave")
+	public CustomUser registerUser(@RequestParam("username") String username, 
+	                                @RequestParam("password") String password) throws RoleNotFoundException {
+	    CustomUser user = new CustomUser();
+	    user.setUsername(username);
+	    user.setPassword(passwordEncoder.encode(password));
+	    CustomRole roleUser = roleServiceInterface.getByRoleName("ROLE_USER");
+	    user.setRoles(List.of(roleUser));
+	    return userServiceInterface.addUser(user);
+	}
+	  @PostMapping("/registerpost")
+	    public CustomUser registerUserPost(@RequestBody CustomUser user) throws RoleNotFoundException {
 	        user.setPassword(passwordEncoder.encode(user.getPassword()));
 	        CustomRole roleUser = roleServiceInterface.getByRoleName("ROLE_USER");
 	        user.setRoles(List.of(roleUser));
