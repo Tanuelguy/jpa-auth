@@ -32,7 +32,7 @@ public class SecurityAPIController {
     }
 
 	@GetMapping("/users")
-	public List<CustomUser> returnUsers(@PathVariable Long id) {
+	public List<CustomUser> returnUsers(@RequestParam Long id) {
 		List<CustomUser> lUser= new ArrayList<CustomUser>();
 		if(id!=null) {
 			lUser.add(userServiceInterface.findByUserId(id));

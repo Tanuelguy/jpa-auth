@@ -9,10 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import fr.ajc.SecuAuth.models.CustomRole;
@@ -35,10 +35,15 @@ public class SecurityController {
 	}
 
 	@GetMapping("/users")
-	public ModelAndView returnUsersHTML(@PathVariable Long id) {
+	public ModelAndView returnUsersHTML(@RequestParam Long id) {
 		ModelAndView mav = new ModelAndView("view_users");
-		List<CustomUser> users=userServiceInterface.findAllUser();
-		mav.addObject("users",users);
+		List<CustomUser> lUser= new ArrayList<CustomUser>();
+		if(id!=null) {
+			lUser.add(userServiceInterface.findByUserId(id));
+		}else {
+			lUser=userServiceInterface.findAllUser();
+		}
+		mav.addObject("users",lUser);
 		return mav;
 	}
 	@GetMapping("/me")
