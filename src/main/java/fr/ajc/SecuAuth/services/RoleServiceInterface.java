@@ -1,7 +1,8 @@
 package fr.ajc.SecuAuth.services;
 
-import org.springframework.context.annotation.Role;
+
+import fr.ajc.SecuAuth.models.CustomRole;
 
 public interface  RoleServiceInterface {
-	Role getByRoleName(String roleName);
+	CustomRole getByRoleName(String roleName);
 }
