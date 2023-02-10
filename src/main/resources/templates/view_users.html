@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vue des utilisateurs</title>
+</head>
+<body>
+ <table>
+ <tr>
+ <td> Id : </td>
+ <td> Username : </td>
+ <td> password (hash) : </td>
+ </tr>
+ <tr th:each"user : ${users}">
+ <td><p th:text="${user.id}" /></td>
+ <td><p th:text="${user.username}" /></td>
+ <td><p th:text="${user.password}" /></td>
+ </tr> 
+ </table>
+</body>
+</html>

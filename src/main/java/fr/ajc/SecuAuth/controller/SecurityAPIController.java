@@ -25,7 +25,7 @@ public class SecurityAPIController {
 	private PasswordEncoder passwordEncoder;
 	private UserServiceInterface userServiceInterface;
 
-	public SecurityAPIController(PasswordEncoder passwordEncoder, RoleServiceInterface roleServiceInterface, UserServiceInterface userServiceInterface) {
+	public SecurityAPIController(PasswordEncoder passwordEncoder, UserServiceInterface userServiceInterface) {
     	this.passwordEncoder = passwordEncoder;
         this.userServiceInterface = userServiceInterface;
 

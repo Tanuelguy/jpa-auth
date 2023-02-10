@@ -3,6 +3,8 @@ package fr.ajc.SecuAuth.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.relation.RoleNotFoundException;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -34,21 +36,21 @@ public class SecurityController {
 
 	@GetMapping("/users")
 	public ModelAndView returnUsersHTML(@PathVariable Long id) {
-		ModelAndView mav = new ModelAndView("view_user");
+		ModelAndView mav = new ModelAndView("view_users");
 		List<CustomUser> users=userServiceInterface.findAllUser();
 		mav.addObject("users",users);
 		return mav;
 	}
 	@GetMapping("/me")
 	public ModelAndView returnMeHTML(Authentication authentication) {
-		ModelAndView mav = new ModelAndView("view_user");
+		ModelAndView mav = new ModelAndView("view_users");
 		List<CustomUser> users=new ArrayList<CustomUser>();
 		users.add(userServiceInterface.getByUserName(authentication.getName()));
 		mav.addObject("users",users);
 		return mav;
 	}
 	  @PostMapping("/register")
-	    public CustomUser registerUser(@RequestBody CustomUser user) {
+	    public CustomUser registerUser(@RequestBody CustomUser user) throws RoleNotFoundException {
 	        user.setPassword(passwordEncoder.encode(user.getPassword()));
 	        CustomRole roleUser = roleServiceInterface.getByRoleName("ROLE_USER");
 	        user.setRoles(List.of(roleUser));

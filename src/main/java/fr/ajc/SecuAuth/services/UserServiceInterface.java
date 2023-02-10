@@ -1,8 +1,11 @@
 package fr.ajc.SecuAuth.services;
 
 import java.util.List;
-import fr.ajc.SecuAuth.models.CustomUser;
 
+import org.springframework.stereotype.Service;
+
+import fr.ajc.SecuAuth.models.CustomUser;
+@Service
 public interface UserServiceInterface {
 	CustomUser findByUserId(Long id);
 	List<CustomUser> findAllUser();

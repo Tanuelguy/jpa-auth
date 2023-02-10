@@ -10,6 +10,6 @@ import fr.ajc.SecuAuth.models.CustomRole;
 
 
 public interface RoleRepository extends JpaRepository<CustomRole, Long> {
-    @Query("select r from Role r where r.roleName = :roleName")
+    @Query("select r from CustomRole r where r.roleName = :roleName")
     Optional<CustomRole> findbyRoleName(@Param("roleName") String roleName);
 }

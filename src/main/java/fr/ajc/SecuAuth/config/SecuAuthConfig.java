@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -17,16 +16,19 @@ import fr.ajc.SecuAuth.models.CustomRole;
 import fr.ajc.SecuAuth.models.CustomUser;
 import fr.ajc.SecuAuth.repositories.RoleRepository;
 import fr.ajc.SecuAuth.repositories.UserRepository;
+import fr.ajc.SecuAuth.services.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecuAuthConfig {
-	@Value("${spring.h2.console.path}")
-	private String h2ConsolePath;
 
-	UserDetailsService userDetailsService;
 
-	public SecuAuthConfig(UserDetailsService userDetailsService) {
+	CustomUserDetailsService userDetailsService;
+	
+//	@Value("${spring.h2.console.path}")
+//	private String h2ConsolePath="h2-ui";
+	
+	public SecuAuthConfig(CustomUserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
 
@@ -38,8 +40,8 @@ public class SecuAuthConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors(cors -> cors.disable()).csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(request -> request.requestMatchers("/home/**", "/register/**", "", "/")
-						.permitAll().requestMatchers(h2ConsolePath + "/**").authenticated()
+				.authorizeHttpRequests(request -> request.requestMatchers("/home/**", "/register/**", "", "/").permitAll()
+					//	.requestMatchers(h2ConsolePath + "/**").authenticated()
 						.requestMatchers("/users/**", "/add-user/**", "change-role/**").hasRole("ADMIN")
 						.requestMatchers("/api/users/**", "/api/add-user/**", "/api/change-role/**").hasRole("ADMIN")
 						.requestMatchers("/me/**", "/api/me/**").hasRole("USER").anyRequest().authenticated())
@@ -49,7 +51,7 @@ public class SecuAuthConfig {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(UserRepository userRepository, RoleRepository roleRepository) {
+	CommandLineRunner commandLineRunner(UserRepository userRepository) {//, RoleRepository roleRepository) {
 		return args -> {
 			CustomRole roleAdmin = new CustomRole("ROLE_ADMIN");
 			CustomRole roleUser = new CustomRole("ROLE_USER");
@@ -57,7 +59,7 @@ public class SecuAuthConfig {
 			List<CustomRole> roles= new ArrayList<CustomRole>();
 			roles.add(roleUser);
 			roles.add(roleAdmin);
-			roleRepository.saveAll(roles);
+			//roleRepository.saveAll(roles);
 			userRepository.save(user);
 		};
 	}

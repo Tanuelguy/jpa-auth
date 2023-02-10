@@ -8,7 +8,7 @@ import fr.ajc.SecuAuth.models.CustomRole;
 import fr.ajc.SecuAuth.repositories.RoleRepository;
 
 @Service
-public class RoleService {
+public class RoleService implements RoleServiceInterface{
 
 	private RoleRepository roleRepository; 
 	
