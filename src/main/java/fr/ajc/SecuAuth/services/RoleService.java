@@ -2,9 +2,9 @@ package fr.ajc.SecuAuth.services;
 
 import javax.management.relation.RoleNotFoundException;
 
-import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Service;
 
+import fr.ajc.SecuAuth.models.CustomRole;
 import fr.ajc.SecuAuth.repositories.RoleRepository;
 
 @Service
@@ -16,7 +16,7 @@ public class RoleService {
 	        this.roleRepository = roleRepository;
 	    }
 	  
-	  public Role getByRoleName(String roleName) throws RoleNotFoundException{
+	  public CustomRole getByRoleName(String roleName) throws RoleNotFoundException{
 		  return roleRepository.findbyRoleName(roleName).orElseThrow(()-> 
 		  new RoleNotFoundException(String.format("Role %s was not found !",roleName)));
 	  }
