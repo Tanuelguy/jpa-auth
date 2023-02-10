@@ -22,12 +22,11 @@ import fr.ajc.SecuAuth.services.CustomUserDetailsService;
 @EnableWebSecurity
 public class SecuAuthConfig {
 
-
 	CustomUserDetailsService userDetailsService;
-	
-//	@Value("${spring.h2.console.path}")
-//	private String h2ConsolePath="h2-ui";
-	
+
+	@Value("${spring.h2.console.path}")
+	private String h2ConsolePath = "h2-ui";
+
 	public SecuAuthConfig(CustomUserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
@@ -40,26 +39,27 @@ public class SecuAuthConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors(cors -> cors.disable()).csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(request -> request.requestMatchers("/home/**", "/register/**", "", "/").permitAll()
-					//	.requestMatchers(h2ConsolePath + "/**").authenticated()
+				.authorizeHttpRequests(request -> request.requestMatchers("/home/**", "/register/**", "", "/")
+						.permitAll()
+						// .requestMatchers(h2ConsolePath + "/**").authenticated()
 						.requestMatchers("/users/**", "/add-user/**", "change-role/**").hasRole("ADMIN")
 						.requestMatchers("/api/users/**", "/api/add-user/**", "/api/change-role/**").hasRole("ADMIN")
 						.requestMatchers("/me/**", "/api/me/**").hasRole("USER").anyRequest().authenticated())
-				.formLogin(form -> form.permitAll()).logout(logout -> logout.permitAll())
+				.formLogin((form) -> form.loginPage("/login").permitAll()).logout(logout -> logout.permitAll())
 				.userDetailsService(userDetailsService).headers(headers -> headers.frameOptions().sameOrigin());
 		return http.build();
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(UserRepository userRepository) {//, RoleRepository roleRepository) {
+	CommandLineRunner commandLineRunner(UserRepository userRepository) {// , RoleRepository roleRepository) {
 		return args -> {
 			CustomRole roleAdmin = new CustomRole("ROLE_ADMIN");
 			CustomRole roleUser = new CustomRole("ROLE_USER");
 			CustomUser user = new CustomUser("user", passwordEncoder().encode("pass"), List.of(roleAdmin, roleUser));
-			List<CustomRole> roles= new ArrayList<CustomRole>();
+			List<CustomRole> roles = new ArrayList<CustomRole>();
 			roles.add(roleUser);
 			roles.add(roleAdmin);
-			//roleRepository.saveAll(roles);
+			// roleRepository.saveAll(roles);
 			userRepository.save(user);
 		};
 	}

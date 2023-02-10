@@ -1,10 +1,14 @@
 package fr.ajc.SecuAuth.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.management.relation.RoleNotFoundException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -19,6 +23,7 @@ import fr.ajc.SecuAuth.models.CustomRole;
 import fr.ajc.SecuAuth.models.CustomUser;
 import fr.ajc.SecuAuth.services.RoleServiceInterface;
 import fr.ajc.SecuAuth.services.UserServiceInterface;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/")
@@ -34,8 +39,29 @@ public class SecurityController {
 		this.passwordEncoder = passwordEncoder;
 	}
 
+	   @Value("${spring.h2.console.path}")
+	    private String h2ConsolePath;
+
+	    @GetMapping({"", "/"})
+	    public void redirectToHome(HttpServletResponse response) throws IOException {
+	        response.sendRedirect("/home");
+	    }
+
+	    @GetMapping("/home")
+	    public Map<String, String> homePage() {
+	        Map<String, String> routes = new HashMap<>();
+	        routes.put("users", "/users");
+	        routes.put("me", "/me");
+	        routes.put("register", "/register");
+//	        routes.put("apiuser", "/api/users");
+//	        routes.put("apime", "/api/me");
+//	        routes.put("apiadd-user","/api/add-user");
+//	        routes.put("apichange-role","/api/change-role");
+	        routes.put("h2", h2ConsolePath);
+	        return routes;
+	    }
 	@GetMapping("/users")
-	public ModelAndView returnUsersHTML(@RequestParam Long id) {
+	public ModelAndView returnUsersHTML(@RequestParam(required = false) Long id) {
 		ModelAndView mav = new ModelAndView("view_users");
 		List<CustomUser> lUser= new ArrayList<CustomUser>();
 		if(id!=null) {

@@ -32,7 +32,7 @@ public class SecurityAPIController {
     }
 
 	@GetMapping("/users")
-	public List<CustomUser> returnUsers(@RequestParam Long id) {
+	public List<CustomUser> returnUsers(@RequestParam(required =false) Long id) {
 		List<CustomUser> lUser= new ArrayList<CustomUser>();
 		if(id!=null) {
 			lUser.add(userServiceInterface.findByUserId(id));
@@ -55,7 +55,7 @@ public class SecurityAPIController {
 	}
 	
 	@GetMapping("/change-role")
-	public CustomUser changeRole(@RequestParam Long id,@RequestParam CustomRole role) {
+	public CustomUser changeRole(@RequestParam Long id,@RequestBody CustomRole role) {
 		CustomUser user= userServiceInterface.findByUserId(id);
 		List<CustomRole> rolesUser=user.getRoles();
 		rolesUser.add(role);
